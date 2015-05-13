@@ -1,0 +1,36 @@
+/* Shadow DOM CSS Cheat Sheet */
+/* http://robdodson.me/blog/2014/04/10/shadow-dom-css-cheat-sheet */
+
+/* styles for the custom element itself - lowest specificity */
+:host {
+  display: block;
+  .item {
+/*     height: 55px; */
+    &.check {
+      opacity: 0.5;
+    }
+    
+    paper-checkbox {
+      margin-left: 20px;
+    }
+
+    span {
+      margin-left: 20px;
+      padding: 10px 0 10px 0;
+      &.check {
+        text-decoration: line-through;
+      }
+    }
+    #arrow {
+      margin: 0 5px 0 10px;
+    }
+    #edit {
+      margin: 0 10px 0 5px;
+    }
+
+  }
+  .sub-items {
+    margin-left: 35px;
+    border: none;
+  }
+}
