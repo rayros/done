@@ -1,6 +1,7 @@
 'use strict';
 Polymer('todo-item',{
   checked: false,
+  taskId: null,
   subItems: [],
   ready: function() {
     this.subItems = this.$.subItems.getDistributedNodes();
@@ -13,6 +14,10 @@ Polymer('todo-item',{
   },
   checkboxHandler: function() {
     this.checked = this.checked ? false : true;
+    todoDatabase.updateTask(this.taskId, { checked: this.checked });
+  },
+  checkedChanged: function() {
+    this.$.checkbox.checked = this.checked;
     for(var index = 0; index < this.subItems.length; ++index) {
       var item = this.subItems[index];
       item.$.checkbox.checked = this.$.checkbox.checked ? true :false;

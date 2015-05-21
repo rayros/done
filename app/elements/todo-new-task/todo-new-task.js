@@ -6,13 +6,16 @@ Polymer('todo-new-task', {
       _.hidden = true;
     };
     _.$.check.onclick = function() {
-      if(_.$.name.value == '' || _.$.categories.selectedItemLabel == '') {
+      if(_.$.name.value === '') {
          return false;
       }
-      todoDatabase.addTask(_.$.name.value);
-      _.fire('update-tasks');
-      _.hidden = true;
-      _.$.name.value = '';
+      todoDatabase.current('category', function(categoryObject) {
+        todoDatabase.addTask(_.$.name.value, categoryObject);
+        _.fire('update-tasks');
+        _.hidden = true;
+        _.$.name.value = '';
+      });
+
     };
   }
 });

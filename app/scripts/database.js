@@ -1,6 +1,6 @@
 (function() {
   window.todoDatabase = {
-    version: 103,
+    version: 106,
     name: 'todo',
     categoriesArray: [],
     polyfill: function(success, error) {
@@ -11,10 +11,9 @@
       window.IDBTransaction = window.IDBTransaction || window.webkitIDBTransaction || window.msIDBTransaction;
       window.IDBKeyRange = window.IDBKeyRange || window.webkitIDBKeyRange || window.msIDBKeyRange;
       // (Mozilla has never prefixed these objects, so we don't need window.mozIDB*)
-      return window.indexedDB ? success.apply(this) : error.apply(this);
+      return window.indexedDB ? success.call(this) : error.call(this);
     },
     init: function() {
-      var _ = this;
       this.polyfill(function() {
         this.open(function() {
           console.log('DB: open success');
@@ -31,12 +30,19 @@
       request.onupgradeneeded = function(event) {
         console.log('DB: upgrading new db.');
         var db = event.target.result;
-        var task = db.createObjectStore('tasks', {keyPath: 'name'});
-        task.createIndex('category', 'category', {unique: false});
-        db.createObjectStore('categories', { keyPath: "id", autoIncrement:true });
-        db.createObjectStore('current', {keyPath: 'key'});
-        _.addCategory('events');
-        _.setCurrent('category', 1);
+        var objectStores = db.objectStoreNames;
+        if (!objectStores.contains('tasks')) {
+          var task = db.createObjectStore('tasks', {keyPath: 'id',autoIncrement: true});
+          task.createIndex('category', 'category', {unique: false});
+        }
+        if (!objectStores.contains('categories')) {
+          db.createObjectStore('categories', {keyPath: 'id',autoIncrement: true});
+        }
+        if (!objectStores.contains('current')) {
+          db.createObjectStore('current', {keyPath: 'key'});
+          _.addCategory('events');
+          _.setCurrent('category', {id: 1,name: 'events'});
+        }
       };
       request.onerror = function(event) {
         console.log('DB: error - ' + event.target.error.message);
@@ -62,34 +68,46 @@
         var c = t.objectStore('current');
         var req = c.put({key: key,value: value});
         req.onsuccess = function() {
-          console.log('DB:[current] key: ' + key + ' value: ' + value);
+          console.log('DB:[current] key: ' + key + ' value: ', value);
         };
       });
     },
-    getCurrent: function(key, success) {
+    current: function(key, success) {
       var _ = this;
       _.transaction('current', function(t) {
         var request = t.objectStore('current').get(key);
         request.onsuccess = function(e) {
-            success(e.target.result.value);
+          success(e.target.result.value);
         };
       });
     },
-    addTask: function(name, categoryId) {
+    addTask: function(name, categoryObject) {
       this.transaction('tasks', function(t) {
         var c = t.objectStore('tasks');
-        var req = c.add({name: name, category: categoryId});
+        var req = c.add({name: name,category: categoryObject.id,checked: false});
         req.onsuccess = function() {
-          console.log('DB: add task ' + name + ' to category ' + categoryId);
+          console.log('DB: add task ' + name + ' to category ', categoryObject);
         };
       });
     },
-    tasks: function(categoryId, success) {
+    updateTask: function(taskId, object) {
+      var _ = this;
+      this.transaction('tasks', function(t) {
+        var objectStore = t.objectStore('tasks');
+        var req = objectStore.get(taskId);
+        req.onsuccess = function(e) {
+          var data = e.target.result;
+          objectStore.put(_.merge(data, object));
+          console.log('DB: update task ' + name);
+        };
+      });
+    },
+    tasks: function(categoryObject, success) {
       var _ = this;
       var array = [];
       _.transaction('tasks', function(t) {
         var index = t.objectStore('tasks').index('category');
-        var request = index.openCursor(IDBKeyRange.only(categoryId));
+        var request = index.openCursor(IDBKeyRange.only(categoryObject.id), 'prev');
         request.onsuccess = function(e) {
           var cursor = e.target.result;
           if (cursor) {
@@ -101,12 +119,15 @@
         };
       });
     },
-    addCategory: function(string) {
+    addCategory: function(string, success) {
       this.transaction('categories', function(t) {
         var c = t.objectStore('categories');
-        var req = c.add({ name: string.toLowerCase() });
-        req.onsuccess = function() {
+        var req = c.add({name: string.toLowerCase()});
+        req.onsuccess = function(e) {
           console.log('add category');
+          if (success !== undefined) {
+            success({id: e.target.result,name: string});
+          }
         };
       });
     },
@@ -137,6 +158,16 @@
       req.onblocked = function() {
         console.log('Couldn\'t delete database due to the operation being blocked');
       };
+    },
+    merge: function(obj1, obj2) {
+      var obj3 = {};
+      for (var attrname in obj1) {
+        obj3[attrname] = obj1[attrname];
+      }
+      for (var attrname2 in obj2) {
+        obj3[attrname2] = obj2[attrname2];
+      }
+      return obj3;
     }
   };
 })();

@@ -6,10 +6,13 @@ Polymer('todo-new-category', {
       _.hidden = true;
     };
     _.$.check.onclick = function() {
-      todoDatabase.addCategory(_.$.name.value);
-      _.fire('update-categories');
-      _.hidden = true;
-      _.$.name.value = '';
+      todoDatabase.addCategory(_.$.name.value, function(id) {
+        todoDatabase.setCurrent('category', id);
+        _.fire('update-categories');
+        _.hidden = true;
+        _.$.name.value = '';
+      });
+    
     };
   }
 });

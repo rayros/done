@@ -4,6 +4,7 @@
   on-select-category="{{selectCategory}}"
   on-new-category="{{newCategory}}"
   on-update-categories="{{updateCategories}}"
+  on-update-tasks="{{updateTasks}}"
   >
   <template>
     <link rel="stylesheet" href="todo-list.css">
@@ -18,10 +19,10 @@
       <core-header-panel main>
         <core-toolbar>
           <paper-icon-button icon="menu" core-drawer-toggle></paper-icon-button>
-          <span>{{ categoryName }}</span>
+          <div class="category" flex>{{ categoryName }}</div>
         </core-toolbar>
-        <div class="hero-unit">
-          <todo-item>
+        <div class="items" id="items">
+<!--           <todo-item>
             <name>Kupić mleko Zabrać pieniądze Zabrać pieniądze Zabrać pieniądze Zabrać pieniądze </name>
             <todo-item><name>Zabrać pieniądze </name></todo-item>
             <todo-item><name>Kupić mleko Zabrać pieniądze Zabrać pieniądze Zabrać pieniądze Zabrać pieniądze</name></todo-item>
@@ -29,7 +30,7 @@
           </todo-item>
           <todo-item><name>Zabrać pieniądze Zabrać pieniądze Zabrać pieniądze Zabrać pieniądze </name></todo-item>
           <todo-item><name>Kategorie</name></todo-item>
-          <todo-item><name>Dodawanie</name></todo-item>
+          <todo-item><name>Dodawanie</name></todo-item> -->
         </div>
         <paper-fab id="add" icon="add"></paper-fab>
       </core-header-panel>
