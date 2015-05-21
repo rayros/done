@@ -1,0 +1,21 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<polymer-element name="todo-new-task" attributes="">
+  <template>
+    <link rel="stylesheet" href="todo-new-task.css">
+    <core-toolbar> 
+      <paper-icon-button id="back" icon="arrow-back"></paper-icon-button>
+      <div flex>New Task</div>
+      <paper-icon-button id="check" icon="check"></paper-icon-button>
+    </core-toolbar>
+    <div class="fields">
+      <paper-input id="name" label="Task Name"></paper-input>
+      <paper-dropdown-menu id="categories" label="AAA">
+        <paper-dropdown id="menuContainer" class="dropdown" on-core-overlay-open="{{comboDrop}}">
+          <core-menu  class="menu"></core-menu>
+        </paper-dropdown>
+      </paper-dropdown-menu>
+    </div>
+  </template>
+  <script src="todo-new-task.js"> </script>
+</polymer-element>

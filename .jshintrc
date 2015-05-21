@@ -13,10 +13,14 @@
   "quotmark": "single",
   "undef": true,
   "unused": true,
+  "newcap": false,
   "globals": {
     "wrap": true,
     "unwrap": true,
     "Polymer": true,
-    "Platform": true
+    "Platform": true,
+    "todoDatabase": true,
+    "indexedDB": true,
+    "IDBKeyRange": true
   }
 }

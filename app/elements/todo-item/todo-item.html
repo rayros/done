@@ -1,17 +1,20 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 <link rel="import" href="../../bower_components/paper-checkbox/paper-checkbox.html">
 <link rel="import" href="../../bower_components/core-icons/editor-icons.html">
-<polymer-element name="todo-item" attributes="">
+<polymer-element name="todo-item" attributes="checked">
   <template>
     <link rel="stylesheet" href="todo-item.css">
     <div class="item {{ {check: checked} | tokenList }}" horizontal layout center>
-      <paper-checkbox id="checkbox" on-change="{{checkHandler}}"></paper-checkbox>
-      <span flex class="{{ {check: checked} | tokenList }}"><content select="name"></content></span>
-      <core-icon-button on-click="{{showHandler}}" id="arrow" icon="arrow-drop-down" hidden></core-icon-button>
+      <paper-checkbox id="checkbox" on-change="{{ checkboxHandler }}"></paper-checkbox>
+      <span flex class="{{ {check: checked} | tokenList }}">
+        <content select="name"></content>
+      </span>
+      <core-icon-button id="arrow" icon="arrow-drop-down" on-click="{{ arrowHandler }}" hidden></core-icon-button>
       <core-icon-button id="edit" icon="editor:mode-edit" ></core-icon-button>
     </div>
-
-    <div id="sub_items_container" class="sub-items" hidden><content id="sub_items" select="todo-item"></content><div>
+    <div id="subItemsContainer" class="sub-items" hidden>
+      <content id="subItems" select="todo-item"></content>
+    <div>
   </template>
   <script src="todo-item.js"> </script>
 </polymer-element>

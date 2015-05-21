@@ -1,0 +1,16 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<polymer-element name="todo-categories" attributes="">
+  <template>
+    <link rel="stylesheet" href="todo-categories.css">
+    <!-- Drawer Toolbar -->
+    <core-toolbar>Categories</core-toolbar>
+    <!-- Drawer Content -->
+    <core-menu selected="0">
+      <div id="items"></div>
+      <core-item icon="add" label="Add category" id="add"></core-item>
+    </core-menu>
+  </template>
+  <script src="todo-categories.js">
+</script>
+</polymer-element>
