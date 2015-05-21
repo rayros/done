@@ -2,7 +2,7 @@
 Polymer('todo-list',{
   newCategory: function() {
     this.$.drawer.closeDrawer();
-    this.$.newCategory.hidden = false;
+    this.$.newCategory.open();
   },
   selectCategory: function(event) {
     todoDatabase.setCurrent('category', event.detail);
@@ -37,7 +37,7 @@ Polymer('todo-list',{
   ready: function() {
     var _ = this;
     _.$.add.onclick = function() {
-      _.$.newTask.hidden = false;
+      _.$.newTask.open();
     };
     _.updateTasks();
   }

@@ -11,6 +11,7 @@
     <div class="fields">
       <paper-input id="name" label="Task Name"></paper-input>
     </div>
+    <core-a11y-keys target="{{}}" keys="enter" on-keys-pressed="{{addHandler}}"></core-a11y-keys>
   </template>
   <script src="todo-new-task.js"> </script>
 </polymer-element>
