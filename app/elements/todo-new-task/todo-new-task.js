@@ -2,10 +2,11 @@
 Polymer('todo-new-task', {
   ready: function() {
     var _ = this;
-    _.$.back.onclick = function() {
-      _.hidden = true;
-    };
-    _.$.check.onclick = this.addHandler.bind(this)
+    _.$.check.onclick = this.addHandler.bind(this);
+  },
+  backHandler: function () {
+    this.hidden = true;
+    this.$.name.value = '';
   },
   open: function() {
     this.hidden = false;

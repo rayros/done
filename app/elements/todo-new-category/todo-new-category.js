@@ -1,11 +1,10 @@
 'use strict';
 Polymer('todo-new-category', {
   ready: function() {
-    var _ = this;
-    _.$.back.onclick = function() {
-      _.hidden = true;
-    };
-    _.$.check.onclick = _.addHandler.bind(this);
+  },
+  backHandler: function() {
+    this.hidden = true;
+    this.$.name.value = '';
   },
   addHandler: function() {
     var _ = this;

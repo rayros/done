@@ -35,10 +35,9 @@ Polymer('todo-list',{
     });    
   },
   ready: function() {
-    var _ = this;
-    _.$.add.onclick = function() {
-      _.$.newTask.open();
-    };
-    _.updateTasks();
+    this.updateTasks();
+  },
+  addTask: function() {
+    this.$.newTask.open();
   }
 });
