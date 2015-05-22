@@ -15,10 +15,7 @@
     },
     init: function() {
       this.polyfill(function() {
-        this.open(function() {
-          console.log('DB: open success');
-        
-        });
+        this.open();
       }, function() {
         console.log('DB: Your browser doesn\'t support a stable version of IndexedDB.\n Such and such feature will not be available.');
       });
@@ -52,10 +49,6 @@
       this.open(function(event) {
         var db = event.target.result;
         var transaction = db.transaction([string], 'readwrite');
-        // report on the success of opening the transaction
-        transaction.oncomplete = function() {
-          console.log('DB[' + string + '] Transaction opened.');
-        };
         transaction.onerror = function(event) {
           console.log('DB: Transaction not opened due to error.');
           console.log(event.target.error.message);
@@ -96,9 +89,18 @@
         var objectStore = t.objectStore('tasks');
         var req = objectStore.get(taskId);
         req.onsuccess = function(e) {
-          var data = e.target.result;
-          objectStore.put(_.merge(data, object));
-          console.log('DB: update task ' + name);
+          var data = _.merge(e.target.result, object);
+          objectStore.put(data);
+          console.log('DB: update task ' + data.name);
+        };
+      });
+    },
+    getTask: function(id, success) {
+      var _ = this;
+      _.transaction('tasks', function(t) {
+        var request = t.objectStore('tasks').get(id);
+        request.onsuccess = function(e) {
+          success(e.target.result);
         };
       });
     },

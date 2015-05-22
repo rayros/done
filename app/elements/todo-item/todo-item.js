@@ -9,6 +9,9 @@ Polymer('todo-item',{
       this.$.arrow.hidden = false;
     }
   },
+  editHandler: function() {
+    this.fire('edit-task', this.taskId);
+  },
   arrowHandler: function() {
     this.$.subItemsContainer.hidden = this.$.subItemsContainer.hidden ? false : true;
   },

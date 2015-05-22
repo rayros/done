@@ -9,8 +9,8 @@
       <span flex class="{{ {check: checked} | tokenList }}">
         <content select="name"></content>
       </span>
-      <core-icon-button id="arrow" icon="arrow-drop-down" on-click="{{ arrowHandler }}" hidden></core-icon-button>
-      <core-icon-button id="edit" icon="editor:mode-edit" ></core-icon-button>
+      <core-icon-button id="arrow" icon="arrow-drop-down" on-click="{{arrowHandler}}" hidden></core-icon-button>
+      <core-icon-button id="edit" icon="editor:mode-edit" on-click="{{editHandler}}" ></core-icon-button>
     </div>
     <div id="subItemsContainer" class="sub-items" hidden>
       <content id="subItems" select="todo-item"></content>

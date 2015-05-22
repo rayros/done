@@ -5,6 +5,7 @@
   on-new-category="{{newCategory}}"
   on-update-categories="{{updateCategories}}"
   on-update-tasks="{{updateTasks}}"
+  on-edit-task="{{editTask}}"
   >
   <template>
     <link rel="stylesheet" href="todo-list.css">
@@ -21,7 +22,7 @@
           <paper-icon-button icon="menu" core-drawer-toggle></paper-icon-button>
           <div class="category" flex>{{ categoryName }}</div>
         </core-toolbar>
-        <div  tabindex="0" class="items" id="items">
+        <div class="items" id="items">
 <!--           <todo-item>
             <name>Kupić mleko Zabrać pieniądze Zabrać pieniądze Zabrać pieniądze Zabrać pieniądze </name>
             <todo-item><name>Zabrać pieniądze </name></todo-item>
