@@ -17,7 +17,7 @@ Polymer('todo-item',{
   },
   checkboxHandler: function() {
     this.checked = this.checked ? false : true;
-    todoDatabase.updateTask(this.taskId, { checked: this.checked });
+    todoDatabase.updateTask(this.taskId, { checked: this.checked ? 1 : 0 });
   },
   checkedChanged: function() {
     this.$.checkbox.checked = this.checked;

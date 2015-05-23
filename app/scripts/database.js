@@ -1,6 +1,6 @@
 (function() {
   window.todoDatabase = {
-    version: 106,
+    version: 2,
     name: 'todo',
     categoriesArray: [],
     polyfill: function(success, error) {
@@ -23,23 +23,20 @@
     open: function(success) {
       var _ = this;
       var request = window.indexedDB.open(this.name, this.version);
-      request.onsuccess = success;
+      request.onsuccess = function(event) {
+          if(success !== undefined) success(event);
+          event.target.result.close();
+      }
       request.onupgradeneeded = function(event) {
         console.log('DB: upgrading new db.');
         var db = event.target.result;
-        var objectStores = db.objectStoreNames;
-        if (!objectStores.contains('tasks')) {
-          var task = db.createObjectStore('tasks', {keyPath: 'id',autoIncrement: true});
-          task.createIndex('category', 'category', {unique: false});
-        }
-        if (!objectStores.contains('categories')) {
-          db.createObjectStore('categories', {keyPath: 'id',autoIncrement: true});
-        }
-        if (!objectStores.contains('current')) {
-          db.createObjectStore('current', {keyPath: 'key'});
-          _.addCategory('events');
-          _.setCurrent('category', {id: 1,name: 'events'});
-        }
+        
+        var task = db.createObjectStore('tasks', {keyPath: 'id',autoIncrement: true});
+        task.createIndex('category, checked', ['category', 'checked'], {unique: false});
+        db.createObjectStore('categories', {keyPath: 'id',autoIncrement: true});
+        db.createObjectStore('current', {keyPath: 'key'});
+        _.addCategory('events');
+        _.setCurrent('category', {id: 1,name: 'events'});
       };
       request.onerror = function(event) {
         console.log('DB: error - ' + event.target.error.message);
@@ -77,7 +74,7 @@
     addTask: function(name, categoryObject) {
       this.transaction('tasks', function(t) {
         var c = t.objectStore('tasks');
-        var req = c.add({name: name,category: categoryObject.id,checked: false});
+        var req = c.add({ name: name,category: categoryObject.id, checked: 0 });
         req.onsuccess = function() {
           console.log('DB: add task ' + name + ' to category ', categoryObject);
         };
@@ -104,12 +101,12 @@
         };
       });
     },
-    tasks: function(categoryObject, success) {
+    tasks: function(categoryObject, checked, success) {
       var _ = this;
       var array = [];
       _.transaction('tasks', function(t) {
-        var index = t.objectStore('tasks').index('category');
-        var request = index.openCursor(IDBKeyRange.only(categoryObject.id), 'prev');
+        var index = t.objectStore('tasks').index('category, checked');
+        var request = index.openCursor(IDBKeyRange.only([categoryObject.id, checked]), 'prev');
         request.onsuccess = function(e) {
           var cursor = e.target.result;
           if (cursor) {
