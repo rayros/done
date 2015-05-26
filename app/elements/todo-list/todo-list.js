@@ -52,7 +52,13 @@ Polymer('todo-list', {
     });
   },
   ready: function() {
-    this.updateTasks();
+    var _ = this;
+    _.updateTasks();
+    _.$.edit.onclick = function() {
+      todoDatabase.current('category', function(categoryObject) {
+        _.$.newCategory.open(categoryObject);
+      });
+    }
   },
   addTask: function() {
     this.$.newTask.open();

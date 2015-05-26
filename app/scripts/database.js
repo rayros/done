@@ -24,13 +24,13 @@
       var _ = this;
       var request = window.indexedDB.open(this.name, this.version);
       request.onsuccess = function(event) {
-          if(success !== undefined) success(event);
-          event.target.result.close();
+        if (success !== undefined)
+          success(event);
+        event.target.result.close();
       }
       request.onupgradeneeded = function(event) {
         console.log('DB: upgrading new db.');
         var db = event.target.result;
-        
         var task = db.createObjectStore('tasks', {keyPath: 'id',autoIncrement: true});
         task.createIndex('category, checked', ['category', 'checked'], {unique: false});
         db.createObjectStore('categories', {keyPath: 'id',autoIncrement: true});
@@ -74,7 +74,7 @@
     addTask: function(name, categoryObject) {
       this.transaction('tasks', function(t) {
         var c = t.objectStore('tasks');
-        var req = c.add({ name: name,category: categoryObject.id, checked: 0 });
+        var req = c.add({name: name,category: categoryObject.id,checked: 0});
         req.onsuccess = function() {
           console.log('DB: add task ' + name + ' to category ', categoryObject);
         };
@@ -126,6 +126,21 @@
           console.log('add category');
           if (success !== undefined) {
             success({id: e.target.result,name: string});
+          }
+        };
+      });
+    },
+    updateCategory: function(categoryId, object, success) {
+      var _ = this;
+      this.transaction('categories', function(t) {
+        var objectStore = t.objectStore('categories');
+        var req = objectStore.get(categoryId);
+        req.onsuccess = function(e) {
+          var data = _.merge(e.target.result, object);
+          objectStore.put(data);
+          console.log('DB: update category ' + data.name);
+          if (success !== undefined) {
+            success(data);
           }
         };
       });
