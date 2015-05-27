@@ -24,10 +24,11 @@
       var _ = this;
       var request = window.indexedDB.open(this.name, this.version);
       request.onsuccess = function(event) {
-        if (success !== undefined)
+        if (success !== undefined) {
           success(event);
+        }
         event.target.result.close();
-      }
+      };
       request.onupgradeneeded = function(event) {
         console.log('DB: upgrading new db.');
         var db = event.target.result;

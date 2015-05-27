@@ -58,12 +58,16 @@ Polymer('todo-list', {
       todoDatabase.current('category', function(categoryObject) {
         _.$.newCategory.open(categoryObject);
       });
-    }
+    };
   },
   addTask: function() {
     this.$.newTask.open();
   },
   editTask: function(e) {
     this.$.newTask.open(e.detail);
+  },
+  resetDB: function() {
+    todoDatabase.deleteDB();
+    location.reload();
   }
 });
