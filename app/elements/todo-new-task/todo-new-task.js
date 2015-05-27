@@ -30,6 +30,7 @@ Polymer('todo-new-task', {
     todoDatabase.current('category', function(categoryObject) {
       if(_.currentId) {
         todoDatabase.updateTask(_.currentId, { name: _.$.name.value });
+
       } else {
         todoDatabase.addTask(_.$.name.value, categoryObject);
       }
