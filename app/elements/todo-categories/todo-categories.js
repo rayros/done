@@ -5,16 +5,18 @@ Polymer('todo-categories', {
     _.$.add.onclick = function() {
       _.fire('new-category');
     };
-    _.update();
   },
   update: function() {
-    var _ = this, 
-    items = _.$.items;
-    while (items.firstChild) {
-      items.removeChild(items.firstChild);
-    }
-    todoDatabase.current('category', function(categoryObject) {
+    var _ = this;
+    
+    todoDatabase
+    .
+    current('category', function(categoryObject) {
       todoDatabase.categories(function(array) {
+        var items = _.$.items;
+        while (items.firstChild) {
+          items.removeChild(items.firstChild);
+        }
         array.forEach(function(object, index) {
           var el = document.createElement('core-item');
           el.label = object.name;
@@ -22,7 +24,7 @@ Polymer('todo-categories', {
             _.fire('select-category', object);
           };
           _.$.items.appendChild(el);
-          if(categoryObject.id === object.id) {
+          if (categoryObject.id === object.id) {
             _.$.items.selected = index;
           }
         });

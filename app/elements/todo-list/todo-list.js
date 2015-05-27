@@ -9,6 +9,9 @@ Polymer('todo-list', {
     this.updateTasks();
     this.$.drawer.closeDrawer();
   },
+  removeCategory: function() {
+    
+  },
   updateCategories: function() {
     this.$.categories.update();
     this.updateTasks();
@@ -53,7 +56,9 @@ Polymer('todo-list', {
   },
   ready: function() {
     var _ = this;
-    _.updateTasks();
+    todoDatabase.init(function() {
+      _.updateCategories();
+    });
     _.$.edit.onclick = function() {
       todoDatabase.current('category', function(categoryObject) {
         _.$.newCategory.open(categoryObject);

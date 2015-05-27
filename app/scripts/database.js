@@ -13,9 +13,9 @@
       // (Mozilla has never prefixed these objects, so we don't need window.mozIDB*)
       return window.indexedDB ? success.call(this) : error.call(this);
     },
-    init: function() {
+    init: function(success) {
       this.polyfill(function() {
-        this.open();
+        this.open(success);
       }, function() {
         console.log('DB: Your browser doesn\'t support a stable version of IndexedDB.\n Such and such feature will not be available.');
       });

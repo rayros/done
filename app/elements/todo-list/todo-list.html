@@ -26,7 +26,7 @@
             <paper-dropdown class="dropdown" halign="right">
             <core-menu>
               <paper-item id="edit">Edit</paper-item>
-              <paper-item>Remove</paper-item>
+              <paper-item on-click="{{removeCategory}}">Remove</paper-item>
               <hr/>
               <paper-item on-click="{{resetDB}}">Reset database</paper-item>
             </core-menu>
