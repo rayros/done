@@ -8,10 +8,7 @@ Polymer('todo-categories', {
   },
   update: function() {
     var _ = this;
-    
-    todoDatabase
-    .
-    current('category', function(categoryObject) {
+    todoDatabase.current('category', function(categoryObject) {
       todoDatabase.categories(function(array) {
         var items = _.$.items;
         while (items.firstChild) {

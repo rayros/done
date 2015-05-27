@@ -54,12 +54,15 @@
         success(transaction);
       });
     },
-    setCurrent: function(key, value) {
+    setCurrent: function(key, value, success) {
       this.transaction('current', function(t) {
         var c = t.objectStore('current');
         var req = c.put({key: key,value: value});
         req.onsuccess = function() {
           console.log('DB:[current] key: ' + key + ' value: ', value);
+          if (success !== undefined) {
+            success();
+          }
         };
       });
     },
@@ -142,6 +145,24 @@
           console.log('DB: update category ' + data.name);
           if (success !== undefined) {
             success(data);
+          }
+        };
+      });
+    },
+    deleteCategory: function(categoryId, success, error) {
+      var _ = this;
+      if (categoryId === 1) {
+        if (error !== undefined) {
+          error();
+        }
+        return;
+      }
+      this.transaction('categories', function(t) {
+        var objectStore = t.objectStore('categories');
+        var req = objectStore.delete(categoryId);
+        req.onsuccess = function(e) {
+          if (success !== undefined) {
+            success(e);
           }
         };
       });

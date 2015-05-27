@@ -3,7 +3,7 @@
 <polymer-element name="todo-list" attributes=""
   on-select-category="{{selectCategory}}"
   on-new-category="{{newCategory}}"
-  on-update-categories="{{updateCategories}}"
+  on-update-all="{{updateAll}}"
   on-update-tasks="{{updateTasks}}"
   on-edit-task="{{editTask}}"
   >
@@ -26,9 +26,9 @@
             <paper-dropdown class="dropdown" halign="right">
             <core-menu>
               <paper-item id="edit">Edit</paper-item>
-              <paper-item on-click="{{removeCategory}}">Remove</paper-item>
+              <paper-item id="remove" on-click="{{removeCategory}}">Remove</paper-item>
               <hr/>
-              <paper-item on-click="{{resetDB}}">Reset database</paper-item>
+              <paper-item id="reset">Reset database</paper-item>
             </core-menu>
             </paper-dropdown>
           </paper-menu-button>
@@ -57,6 +57,7 @@
 
   </template>
   <script src="todo-list.js">
+
 
 
 

@@ -10,18 +10,24 @@ Polymer('todo-new-category', {
     var _ = this;
     if (_.currentId) {
       todoDatabase.updateCategory(_.currentId, {name: _.$.name.value}, function(categoryObject) {
-        todoDatabase.setCurrent('category', categoryObject);
-        _.fire('update-categories');
-      });
+        todoDatabase.setCurrent('category', categoryObject, function() {
+          _.fire('update-all');
+          _.$.name.value = '';
+          _.hidden = true;
+        });
       
+      });
+    
     } else {
       todoDatabase.addCategory(_.$.name.value, function(categoryObject) {
-        todoDatabase.setCurrent('category', categoryObject);
-        _.fire('update-categories');
+        todoDatabase.setCurrent('category', categoryObject, function() {
+          _.fire('update-all');
+          _.$.name.value = '';
+          _.hidden = true;
+        });
       });
     }
-    _.$.name.value = '';
-    _.hidden = true;
+  
   },
   open: function(categoryObject) {
     if (categoryObject !== undefined) {

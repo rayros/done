@@ -9,26 +9,30 @@ Polymer('todo-list', {
     this.updateTasks();
     this.$.drawer.closeDrawer();
   },
-  removeCategory: function() {
-    
-  },
-  updateCategories: function() {
+  updateAll: function() {
     this.$.categories.update();
     this.updateTasks();
   },
+  resizeDropdowMenu: function() {
+    var el = this.querySelector("::shadow paper-menu-button paper-dropdown::shadow #scroller")
+    el.style.width = null;
+    el.style.height = null;
+  },
   updateTasks: function() {
-    var _ = this, 
-    items = _.$.items;
-    while (items.firstChild) {
-      items.removeChild(items.firstChild);
-    }
-    items = _.$.itemsChecked;
-    while (items.firstChild) {
-      items.removeChild(items.firstChild);
-    }
+    var _ = this;
     todoDatabase.current('category', function(categoryObject) {
       _.categoryName = categoryObject.name;
+      _.$.remove.hidden = categoryObject.id === 1 ? true : false;
+      _.resizeDropdowMenu();
       todoDatabase.tasks(categoryObject, 0, function(array) {
+        var items = _.$.items;
+        while (items.firstChild) {
+          items.removeChild(items.firstChild);
+        }
+        items = _.$.itemsChecked;
+        while (items.firstChild) {
+          items.removeChild(items.firstChild);
+        }
         array.forEach(function(object) {
           var el = document.createElement('todo-item');
           el.taskId = object.id;
@@ -57,12 +61,26 @@ Polymer('todo-list', {
   ready: function() {
     var _ = this;
     todoDatabase.init(function() {
-      _.updateCategories();
+      _.updateAll();
     });
     _.$.edit.onclick = function() {
       todoDatabase.current('category', function(categoryObject) {
         _.$.newCategory.open(categoryObject);
       });
+    };
+    _.$.remove.onclick = function() {
+      todoDatabase.current('category', function(categoryObject) {
+        todoDatabase.deleteCategory(categoryObject.id, function() {
+          todoDatabase.categories(function(array) {
+            todoDatabase.setCurrent('category', array[0]);
+            _.updateAll();
+          })
+        });
+      });
+    };
+    _.$.reset.onclick = function() {
+      todoDatabase.deleteDB();
+      location.reload();
     };
   },
   addTask: function() {
@@ -70,9 +88,5 @@ Polymer('todo-list', {
   },
   editTask: function(e) {
     this.$.newTask.open(e.detail);
-  },
-  resetDB: function() {
-    todoDatabase.deleteDB();
-    location.reload();
   }
 });
