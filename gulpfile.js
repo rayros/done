@@ -163,7 +163,8 @@ gulp.task('serve', ['styles', 'elements'], function () {
     server: {
       baseDir: ['.tmp', 'app'],
       routes: {
-        '/bower_components': 'bower_components'
+        '/bower_components': 'bower_components',
+        '/dist': 'dist'
       }
     }
   });

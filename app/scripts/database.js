@@ -150,7 +150,6 @@
       });
     },
     deleteCategory: function(categoryId, success, error) {
-      var _ = this;
       if (categoryId === 1) {
         if (error !== undefined) {
           error();

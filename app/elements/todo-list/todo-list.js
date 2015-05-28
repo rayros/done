@@ -14,7 +14,7 @@ Polymer('todo-list', {
     this.updateTasks();
   },
   resizeDropdowMenu: function() {
-    var el = this.querySelector("::shadow paper-menu-button paper-dropdown::shadow #scroller")
+    var el = this.querySelector('::shadow paper-menu-button paper-dropdown::shadow #scroller');
     el.style.width = null;
     el.style.height = null;
   },
@@ -74,7 +74,7 @@ Polymer('todo-list', {
           todoDatabase.categories(function(array) {
             todoDatabase.setCurrent('category', array[0]);
             _.updateAll();
-          })
+          });
         });
       });
     };

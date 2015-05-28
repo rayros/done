@@ -25,6 +25,9 @@
   [drawer] {
     background-color: #EEEEEE;
   }
+  #drawer {
+      overflow: initial;
+  }
   paper-fab {
     position: absolute;
     bottom: 15px;
