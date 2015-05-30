@@ -8,6 +8,9 @@ Polymer('todo-new-category', {
   },
   addHandler: function() {
     var _ = this;
+    if (_.$.name.value === '') {
+      return false;
+    }
     if (_.currentId) {
       todoDatabase.updateCategory(_.currentId, {name: _.$.name.value}, function(categoryObject) {
         todoDatabase.setCurrent('category', categoryObject, function() {
