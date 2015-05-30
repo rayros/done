@@ -1,6 +1,6 @@
 (function() {
   window.todoDatabase = {
-    version: 2,
+    version: 3,
     name: 'todo',
     categoriesArray: [],
     polyfill: function(success, error) {
@@ -20,6 +20,18 @@
         console.log('DB: Your browser doesn\'t support a stable version of IndexedDB.\n Such and such feature will not be available.');
       });
     },
+    Version: function(event) {
+      return {
+        check: function(version) {
+          if (event.oldVersion < version && event.newVersion >= version) {
+            console.log('DB: Upgrading to version: ' + version);
+            return true;
+          } else {
+            return false;
+          }
+        }
+      };
+    },
     open: function(success) {
       var _ = this;
       var request = window.indexedDB.open(this.name, this.version);
@@ -30,23 +42,35 @@
         event.target.result.close();
       };
       request.onupgradeneeded = function(event) {
-        console.log('DB: upgrading new db.');
+        console.log('DB: Upgrading...');
         var db = event.target.result;
-        var task = db.createObjectStore('tasks', {keyPath: 'id',autoIncrement: true});
-        task.createIndex('category, checked', ['category', 'checked'], {unique: false});
-        db.createObjectStore('categories', {keyPath: 'id',autoIncrement: true});
-        db.createObjectStore('current', {keyPath: 'key'});
-        _.addCategory('events');
-        _.setCurrent('category', {id: 1,name: 'events'});
+        var t = event.target.transaction;
+        var v = _.Version(event);
+        var tasks;
+        if (v.check(2)) {
+          tasks = db.createObjectStore('tasks', {keyPath: 'id',autoIncrement: true});
+          tasks.createIndex('category, checked', ['category', 'checked'], {unique: false});
+          db.createObjectStore('categories', {keyPath: 'id',autoIncrement: true});
+          db.createObjectStore('current', {keyPath: 'key'});
+          _.addCategory('events');
+          _.setCurrent('category', {id: 1,name: 'events'});
+        }
+        if (v.check(3)) {
+          tasks = t.objectStore('tasks');
+          tasks.createIndex('category', ['category'], {unique: false});
+        }
+      // Next migration
+      // if (v.check(4)) {
+      // }
       };
       request.onerror = function(event) {
         console.log('DB: error - ' + event.target.error.message);
       };
     },
-    transaction: function(string, success) {
+    transaction: function(array, success) {
       this.open(function(event) {
         var db = event.target.result;
-        var transaction = db.transaction([string], 'readwrite');
+        var transaction = db.transaction(array, 'readwrite');
         transaction.onerror = function(event) {
           console.log('DB: Transaction not opened due to error.');
           console.log(event.target.error.message);
@@ -80,7 +104,7 @@
         var c = t.objectStore('tasks');
         var req = c.add({name: name,category: categoryObject.id,checked: 0});
         req.onsuccess = function() {
-          console.log('DB: add task ' + name + ' to category ', categoryObject);
+          console.log('DB: Add task "' + name + '" to category "' + categoryObject.name + '"');
         };
       });
     },
@@ -127,7 +151,7 @@
         var c = t.objectStore('categories');
         var req = c.add({name: string.toLowerCase()});
         req.onsuccess = function(e) {
-          console.log('add category');
+          console.log('DB: Add category');
           if (success !== undefined) {
             success({id: e.target.result,name: string});
           }
@@ -156,14 +180,27 @@
         }
         return;
       }
-      this.transaction('categories', function(t) {
-        var objectStore = t.objectStore('categories');
-        var req = objectStore.delete(categoryId);
+      this.transaction(['categories', 'tasks'], function(t) {
+        var categories = t.objectStore('categories');
+        var tasks = t.objectStore('tasks');
+        var indexCategory = tasks.index('category');
+        var req = indexCategory.openCursor(IDBKeyRange.only([categoryId]));
         req.onsuccess = function(e) {
-          if (success !== undefined) {
-            success(e);
+          var cursor = e.target.result;
+          if (cursor) {
+            tasks.delete(cursor.value.id);
+            cursor.continue();
+          } else {
+            var req = categories.delete(categoryId);
+            req.onsuccess = function() {
+              console.log('DB: remove category by id: ' + categoryId);
+              if (success !== undefined) {
+                success(e);
+              }
+            };
           }
         };
+      
       });
     },
     categories: function(success) {
