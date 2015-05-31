@@ -129,6 +129,19 @@
         };
       });
     },
+    deleteTask: function(taskId, success) {
+      this.transaction(['tasks'], function(t) {
+        var tasks = t.objectStore('tasks');
+        var req = tasks.delete(taskId);
+        req.onsuccess = function(e) {
+          console.log('DB: remove task by id: ' + taskId);
+          if (success !== undefined) {
+            success(e);
+          }
+        };
+      
+      });
+    },
     tasks: function(categoryObject, checked, success) {
       var _ = this;
       var array = [];

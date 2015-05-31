@@ -4,23 +4,34 @@ Polymer('todo-new-task', {
   ready: function() {
     var _ = this;
     _.$.check.onclick = this.addHandler.bind(this);
+    _.$.delete.onclick = function() {
+      todoDatabase.deleteTask(_.currentId, function() {
+        _.fire('update-tasks');
+        _.backHandler();
+      });
+    };
   },
-  backHandler: function () {
+  backHandler: function() {
     this.hidden = true;
     this.$.name.value = '';
   },
   open: function(id) {
     var _ = this;
-    if(id !== undefined) {
+    
+    if (id !== undefined) {
       _.currentId = id;
       todoDatabase.getTask(id, function(object) {
         _.$.name.value = object.name;
+        _.$.delete.hidden = false;
+        _.hidden = false;
+        _.$.name.blur();
       });
     } else {
       _.currentId = null;
+      _.$.delete.hidden = true;
+      _.hidden = false;
+      _.$.name.focus();
     }
-    this.hidden = false;
-    this.$.name.focus();
   },
   addHandler: function() {
     var _ = this;
@@ -28,9 +39,9 @@ Polymer('todo-new-task', {
       return false;
     }
     todoDatabase.current('category', function(categoryObject) {
-      if(_.currentId) {
-        todoDatabase.updateTask(_.currentId, { name: _.$.name.value });
-
+      if (_.currentId) {
+        todoDatabase.updateTask(_.currentId, {name: _.$.name.value});
+      
       } else {
         todoDatabase.addTask(_.$.name.value, categoryObject);
       }

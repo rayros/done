@@ -15,22 +15,39 @@
   height: 100%;
   animation: circle-hover 1s ease-out;
 
+  core-header-panel {
+    height: 100%;
 
-  .fields {
-    padding: 10px;
-
-    paper-input {
-      width: 100%;
-      font-size: 30px;
+    core-toolbar {
+      color: #FAFAFA;
+      background-color: #009688;
     }
 
-    paper-dropdown-menu {
+    .content { 
+      position: absolute;
+      height: 100%;
       width: 100%;
 
+     .fields {
+        padding: 10px;
+
+        paper-input {
+          width: 100%;
+          font-size: 30px;
+        }
+      }
+
+      #delete {
+          border-radius: 0;
+          width: 100%;
+          background: #F44336;
+          margin: 0;
+          color: #fff;
+          font-weight: bold;
+          letter-spacing: 0.07em;
+      }
     }
   }
-  core-toolbar {
-    color: #FAFAFA;
-    background-color: #009688;
-  }
+ 
+
 }
