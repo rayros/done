@@ -152,6 +152,8 @@ gulp.task('vulcanize', function () {
 // Clean Output Directory
 gulp.task('clean', del.bind(null, ['.tmp', 'dist']));
 
+gulp.task('cleanDist', del.bind(null, ['dist/bower_components/*', '!dist/bower_components/webcomponentsjs', 'dist/elements/*', '!dist/elements/elements.vulcanized.html']));
+
 // Watch Files For Changes & Reload
 gulp.task('serve', ['styles', 'elements'], function () {
   browserSync({
@@ -195,6 +197,7 @@ gulp.task('default', ['clean'], function (cb) {
     'elements',
     ['jshint', 'images', 'fonts', 'html'],
     'vulcanize',
+    'cleanDist',
     cb);
 });
 
