@@ -79,8 +79,9 @@ Polymer('todo-list', {
       });
     };
     _.$.reset.onclick = function() {
-      todoDatabase.deleteDB();
-      location.reload();
+      todoDatabase.deleteDB(function() {
+        location.reload();
+      });
     };
   },
   addTask: function() {

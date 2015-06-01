@@ -4,14 +4,15 @@
     name: 'todo',
     categoriesArray: [],
     polyfill: function(success, error) {
-      // In the following line, you should include the prefixes of implementations you want to test.
-      window.indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB;
-      // DON'T use 'var indexedDB = ...' if you're not in a function.
-      // Moreover, you may need references to some window.IDB* objects:
-      window.IDBTransaction = window.IDBTransaction || window.webkitIDBTransaction || window.msIDBTransaction;
-      window.IDBKeyRange = window.IDBKeyRange || window.webkitIDBKeyRange || window.msIDBKeyRange;
-      // (Mozilla has never prefixed these objects, so we don't need window.mozIDB*)
-      return window.indexedDB ? success.call(this) : error.call(this);
+      this.indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB || window.shimIndexedDB;
+      this.IDBTransaction = window.IDBTransaction || window.webkitIDBTransaction || window.msIDBTransaction || window.shimIndexedDB.modules.IDBTransaction;
+      this.IDBKeyRange = window.IDBKeyRange || window.webkitIDBKeyRange || window.msIDBKeyRange || window.shimIndexedDB.modules.IDBKeyRange;
+      if(this.isIOS8()) {
+          this.indexedDB = window.shimIndexedDB;
+          this.IDBTransaction = window.shimIndexedDB.modules.IDBTransaction;
+          this.IDBKeyRange = window.shimIndexedDB.modules.IDBKeyRange;
+      }
+      return this.indexedDB ? success.call(this) : error.call(this);
     },
     init: function(success) {
       this.polyfill(function() {
@@ -32,14 +33,19 @@
         }
       };
     },
+    isIOS8: function() {
+      var deviceAgent = navigator.userAgent.toLowerCase();
+      return /(iphone|ipod|ipad).* os 8_/.test(deviceAgent);
+    },
     open: function(success) {
       var _ = this;
-      var request = window.indexedDB.open(this.name, this.version);
+      var request = _.indexedDB.open(this.name, this.version);
       request.onsuccess = function(event) {
-        if (success !== undefined) {
+        if (success) {
           success(event);
         }
         event.target.result.close();
+        return false;
       };
       request.onupgradeneeded = function(event) {
         console.log('DB: Upgrading...');
@@ -84,7 +90,7 @@
         var req = c.put({key: key,value: value});
         req.onsuccess = function() {
           console.log('DB:[current] key: ' + key + ' value: ', value);
-          if (success !== undefined) {
+          if (success) {
             success();
           }
         };
@@ -96,6 +102,7 @@
         var request = t.objectStore('current').get(key);
         request.onsuccess = function(e) {
           success(e.target.result.value);
+          return false;
         };
       });
     },
@@ -135,7 +142,7 @@
         var req = tasks.delete(taskId);
         req.onsuccess = function(e) {
           console.log('DB: remove task by id: ' + taskId);
-          if (success !== undefined) {
+          if (success) {
             success(e);
           }
         };
@@ -147,7 +154,7 @@
       var array = [];
       _.transaction('tasks', function(t) {
         var index = t.objectStore('tasks').index('category, checked');
-        var request = index.openCursor(IDBKeyRange.only([categoryObject.id, checked]), 'prev');
+        var request = index.openCursor(_.IDBKeyRange.only([categoryObject.id, checked]), 'prev');
         request.onsuccess = function(e) {
           var cursor = e.target.result;
           if (cursor) {
@@ -165,7 +172,7 @@
         var req = c.add({name: string.toLowerCase()});
         req.onsuccess = function(e) {
           console.log('DB: Add category');
-          if (success !== undefined) {
+          if (success) {
             success({id: e.target.result,name: string});
           }
         };
@@ -180,7 +187,7 @@
           var data = _.merge(e.target.result, object);
           objectStore.put(data);
           console.log('DB: update category ' + data.name);
-          if (success !== undefined) {
+          if (success) {
             success(data);
           }
         };
@@ -188,7 +195,7 @@
     },
     deleteCategory: function(categoryId, success, error) {
       if (categoryId === 1) {
-        if (error !== undefined) {
+        if (error) {
           error();
         }
         return;
@@ -207,7 +214,7 @@
             var req = categories.delete(categoryId);
             req.onsuccess = function() {
               console.log('DB: remove category by id: ' + categoryId);
-              if (success !== undefined) {
+              if (success) {
                 success(e);
               }
             };
@@ -232,10 +239,13 @@
         };
       });
     },
-    deleteDB: function() {
-      var req = indexedDB.deleteDatabase(this.name);
+    deleteDB: function(success) {
+      var req = this.indexedDB.deleteDatabase(this.name);
       req.onsuccess = function() {
         console.log('Deleted database successfully');
+        if (success) {
+          success();
+        }
       };
       req.onerror = function() {
         console.log('Couldn\'t delete database');
