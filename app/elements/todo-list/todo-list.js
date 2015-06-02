@@ -1,5 +1,11 @@
 'use strict';
 Polymer('todo-list', {
+  domReady: function () {
+    var _ = this;
+    setTimeout(function () {
+      _.classList.add('show');
+    }, 2000);
+  },
   newCategory: function() {
     this.$.drawer.closeDrawer();
     this.$.newCategory.open();
