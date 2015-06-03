@@ -6,11 +6,9 @@
     name: 'todo',
     polyfill: function(success, error) {
       this.indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB || window.shimIndexedDB;
-      this.IDBTransaction = window.IDBTransaction || window.webkitIDBTransaction || window.msIDBTransaction || window.shimIndexedDB.modules.IDBTransaction;
       this.IDBKeyRange = window.IDBKeyRange || window.webkitIDBKeyRange || window.msIDBKeyRange || window.shimIndexedDB.modules.IDBKeyRange;
       if (this.isIOS8()) {
         this.indexedDB = window.shimIndexedDB;
-        this.IDBTransaction = window.shimIndexedDB.modules.IDBTransaction;
         this.IDBKeyRange = window.shimIndexedDB.modules.IDBKeyRange;
       }
       return this.indexedDB ? success.call(this) : error.call(this);
