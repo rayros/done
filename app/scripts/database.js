@@ -1,16 +1,17 @@
+ /*jshint -W030 */
+'use strict';
 (function() {
   window.todoDatabase = {
     version: 3,
     name: 'todo',
-    categoriesArray: [],
     polyfill: function(success, error) {
       this.indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB || window.shimIndexedDB;
       this.IDBTransaction = window.IDBTransaction || window.webkitIDBTransaction || window.msIDBTransaction || window.shimIndexedDB.modules.IDBTransaction;
       this.IDBKeyRange = window.IDBKeyRange || window.webkitIDBKeyRange || window.msIDBKeyRange || window.shimIndexedDB.modules.IDBKeyRange;
-      if(this.isIOS8()) {
-          this.indexedDB = window.shimIndexedDB;
-          this.IDBTransaction = window.shimIndexedDB.modules.IDBTransaction;
-          this.IDBKeyRange = window.shimIndexedDB.modules.IDBKeyRange;
+      if (this.isIOS8()) {
+        this.indexedDB = window.shimIndexedDB;
+        this.IDBTransaction = window.shimIndexedDB.modules.IDBTransaction;
+        this.IDBKeyRange = window.shimIndexedDB.modules.IDBKeyRange;
       }
       return this.indexedDB ? success.call(this) : error.call(this);
     },
@@ -25,7 +26,7 @@
       return {
         check: function(version) {
           if (event.oldVersion < version && event.newVersion >= version) {
-            console.log('DB: Upgrading to version: ' + version);
+            DEBUG && console.log('DB: Upgrading to version: ' + version);
             return true;
           } else {
             return false;
@@ -48,7 +49,7 @@
         return false;
       };
       request.onupgradeneeded = function(event) {
-        console.log('DB: Upgrading...');
+        DEBUG && console.log('DB: Upgrading...');
         var db = event.target.result;
         var t = event.target.transaction;
         var v = _.Version(event);
@@ -89,7 +90,7 @@
         var c = t.objectStore('current');
         var req = c.put({key: key,value: value});
         req.onsuccess = function() {
-          console.log('DB:[current] key: ' + key + ' value: ', value);
+          DEBUG && console.log('DB:[current] key: ' + key + ' value: ', value);
           if (success) {
             success();
           }
@@ -111,7 +112,7 @@
         var c = t.objectStore('tasks');
         var req = c.add({name: name,category: categoryObject.id,checked: 0});
         req.onsuccess = function() {
-          console.log('DB: Add task "' + name + '" to category "' + categoryObject.name + '"');
+          DEBUG && console.log('DB: Add task "' + name + '" to category "' + categoryObject.name + '"');
         };
       });
     },
@@ -123,7 +124,7 @@
         req.onsuccess = function(e) {
           var data = _.merge(e.target.result, object);
           objectStore.put(data);
-          console.log('DB: update task ' + data.name);
+          DEBUG && console.log('DB: update task ' + data.name);
         };
       });
     },
@@ -141,7 +142,7 @@
         var tasks = t.objectStore('tasks');
         var req = tasks.delete(taskId);
         req.onsuccess = function(e) {
-          console.log('DB: remove task by id: ' + taskId);
+          DEBUG && console.log('DB: remove task by id: ' + taskId);
           if (success) {
             success(e);
           }
@@ -171,7 +172,7 @@
         var c = t.objectStore('categories');
         var req = c.add({name: string.toLowerCase()});
         req.onsuccess = function(e) {
-          console.log('DB: Add category');
+          DEBUG && console.log('DB: Add category');
           if (success) {
             success({id: e.target.result,name: string});
           }
@@ -186,7 +187,7 @@
         req.onsuccess = function(e) {
           var data = _.merge(e.target.result, object);
           objectStore.put(data);
-          console.log('DB: update category ' + data.name);
+          DEBUG && console.log('DB: update category ' + data.name);
           if (success) {
             success(data);
           }
@@ -213,7 +214,7 @@
           } else {
             var req = categories.delete(categoryId);
             req.onsuccess = function() {
-              console.log('DB: remove category by id: ' + categoryId);
+              DEBUG && console.log('DB: remove category by id: ' + categoryId);
               if (success) {
                 success(e);
               }
@@ -242,7 +243,7 @@
     deleteDB: function(success) {
       var req = this.indexedDB.deleteDatabase(this.name);
       req.onsuccess = function() {
-        console.log('Deleted database successfully');
+        DEBUG && console.log('Deleted database successfully');
         if (success) {
           success();
         }

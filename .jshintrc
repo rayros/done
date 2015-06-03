@@ -21,6 +21,7 @@
     "Platform": true,
     "todoDatabase": true,
     "indexedDB": true,
-    "IDBKeyRange": true
+    "IDBKeyRange": true,
+    "DEBUG": true
   }
 }

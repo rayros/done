@@ -1,4 +1,7 @@
+'use strict';
 (function() {
-  'use strict';
+  if (typeof DEBUG === 'undefined') {
+    window.DEBUG = true;
+  }
   todoDatabase.init();
 })();
