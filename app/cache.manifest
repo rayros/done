@@ -1,0 +1,16 @@
+CACHE MANIFEST
+# rev 7
+
+elements/elements.vulcanized.html
+styles/main.css
+scripts/app.js
+scripts/vendor.js
+favicon.ico
+images/done.png
+
+FALLBACK:
+scripts/analytics.js empty_fallback.js
+
+NETWORK:
+*
+

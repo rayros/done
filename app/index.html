@@ -1,15 +1,18 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" manifest="cache.manifest">
 
 <head>
   <meta charset="utf-8">
   <meta name="description" content="">
   <meta name="viewport" content="width=device-width, initial-scale=1, minimal-ui">
   <title>Done!</title>
+  <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
   <link rel="shortcut icon" href="favicon.ico" />
+
+  <!-- Manifest for Chrome -->
   <link rel="manifest" href="manifest.json">
 
-  <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+  <!-- Open graph protocol for facebook -->
   <meta property="og:title" content="Done!" />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="http://rayros.github.io/todo/" />
@@ -19,11 +22,8 @@
   <link rel="stylesheet" href="styles/main.css">
   <!-- endbuild-->
 
-  <!-- build:js bower_components/webcomponentsjs/webcomponents.min.js -->
-  <script src="bower_components/webcomponentsjs/webcomponents.js"></script>
-  <!-- endbuild -->
-
   <!-- build:js scripts/vendor.js -->
+  <script src="bower_components/webcomponentsjs/webcomponents.js"></script>
   <script src="bower_components/indexeddbshim/dist/indexeddbshim.min.js"></script>
   <!-- endbuild -->
 

@@ -159,7 +159,7 @@ gulp.task('vulcanize', function() {
 // Clean Output Directory
 gulp.task('clean', del.bind(null, ['.tmp', 'dist']));
 
-gulp.task('cleanDist', del.bind(null, ['dist/bower_components/*', '!dist/bower_components/webcomponentsjs', 'dist/elements/*', '!dist/elements/elements.vulcanized.html']));
+gulp.task('cleanDist', del.bind(null, ['dist/bower_components', 'dist/elements/*', '!dist/elements/elements.vulcanized.html']));
 
 // Watch Files For Changes & Reload
 gulp.task('serve', ['styles', 'elements'], function() {
