@@ -1,22 +1,12 @@
 <!doctype html>
 <html lang="en" manifest="cache.manifest">
-
 <head>
   <meta charset="utf-8">
   <meta name="description" content="">
   <meta name="viewport" content="width=device-width, initial-scale=1, minimal-ui">
   <title>Done!</title>
-  <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+  <!-- favicon.ico in the root directory -->
   <link rel="shortcut icon" href="favicon.ico" />
-
-  <!-- Manifest for Chrome -->
-  <link rel="manifest" href="manifest.json">
-
-  <!-- Open graph protocol for facebook -->
-  <meta property="og:title" content="Done!" />
-  <meta property="og:type" content="website" />
-  <meta property="og:url" content="http://rayros.github.io/todo/" />
-  <meta property="og:image" content="http://rayros.github.io/todo/images/ogp.png" />
 
   <!-- build:css styles/main.css -->
   <link rel="stylesheet" href="styles/main.css">
@@ -30,6 +20,22 @@
   <!-- will be replaced with elements/elements.vulcanized.html -->
   <link rel="import" href="elements/elements.html">
   <!-- endreplace -->
+
+  <!-- Apple WebApplication configuration -->
+  <link rel="apple-touch-icon" href="images/apple/touch-icon-iphone.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="images/apple/touch-icon-ipad.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="images/apple/touch-icon-iphone-retina.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="images/apple/touch-icon-ipad-retina.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+
+  <!-- Manifest for Chrome -->
+  <link rel="manifest" href="manifest.json">
+
+  <!-- Open graph protocol for facebook -->
+  <meta property="og:title" content="Done!" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="http://rayros.github.io/todo/" />
+  <meta property="og:image" content="http://rayros.github.io/todo/images/ogp.png" />
 </head>
 
 <body unresolved fullbleed layout vertical>
@@ -42,6 +48,7 @@
   <script src="scripts/database.js"></script>
   <script src="scripts/app.js"></script>
   <!-- endbuild -->
+  
   <!-- build:js scripts/analytics.js -->
   <script src="scripts/analytics.js"></script>
   <!-- endbuild-->
