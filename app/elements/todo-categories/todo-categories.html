@@ -3,13 +3,19 @@
 <polymer-element name="todo-categories" attributes="">
   <template>
     <link rel="stylesheet" href="todo-categories.css">
+    <div class="content" vertical layout>
     <!-- Drawer Toolbar -->
     <core-toolbar>Categories</core-toolbar>
     <!-- Drawer Content -->
-    <core-menu id="items"></core-menu>
+    <div class="categories" flex>
+      <core-menu id="items"></core-menu>
+    </div>
+    <div >
     <core-menu selected="0">
       <core-item icon="add" label="Add category" id="add"></core-item>
     </core-menu>
+    </div>
+    </div>
   </template>
   <script src="todo-categories.js">
 </script>

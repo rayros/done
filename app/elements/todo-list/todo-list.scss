@@ -43,9 +43,16 @@
     bottom: 15px;
     right: 15px;
   }
-  .category:first-letter {
+  .category {
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    
+    &:first-letter {
       text-transform: uppercase;
+    }
   }
+
   .done {
     text-align: center;
     margin-top: 10px;
