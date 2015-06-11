@@ -1,6 +1,7 @@
 'use strict';
 Polymer('todo-new-task', {
   currentId: null,
+  title: '',
   ready: function() {
     var _ = this;
     _.$.check.onclick = this.addHandler.bind(this);
@@ -20,6 +21,7 @@ Polymer('todo-new-task', {
     
     if (id !== undefined) {
       _.currentId = id;
+      _.title = 'Edit task';
       todoDatabase.getTask(id, function(object) {
         _.$.name.value = object.name;
         _.$.delete.hidden = false;
@@ -28,6 +30,7 @@ Polymer('todo-new-task', {
       });
     } else {
       _.currentId = null;
+      _.title = 'New task';
       _.$.delete.hidden = true;
       _.hidden = false;
       _.$.name.focus();

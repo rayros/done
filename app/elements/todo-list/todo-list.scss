@@ -7,51 +7,70 @@
   display: block;
   visibility:hidden;
   opacity:0;
-  transition:visibility 0s linear 0.5s,opacity 0.5s linear;
+  transition: visibility 0s linear 0.5s, opacity 0.5s linear;
 
-  .main {
-    background: #fff;
-    core-toolbar {
-      color: #FAFAFA;
-      background-color: #009688;
+  todo-new-category, todo-new-task {
+    z-index: 2;
+  }
 
-      paper-menu-button {
+  core-drawer-panel {
+    /deep/ #drawer {
+      z-index: 1;
+    }
 
-        core-menu {
-          color: black;
-          font-size: 16px;
-          
+    [main] {
+      background: #fff;
 
-          paper-item {
-            cursor: pointer;
-            &.core-selected {
-                background-color: white;
-            }
+      core-toolbar {
+        color: #FAFAFA;
+        background-color: #009688;
+
+        .category {
+          text-overflow: ellipsis;
+          white-space: nowrap;
+          overflow: hidden;
+
+          &:first-letter {
+            text-transform: uppercase;
           }
         }
+
+        paper-menu-button {
+
+          core-menu {
+            color: black;
+            font-size: 16px;
+
+            paper-item {
+              cursor: pointer;
+
+              &.core-selected {
+                  background-color: white;
+              }
+            }
+
+          }
+
+        }
+
       }
+
+      paper-fab {
+        position: fixed;
+        bottom: 15px;
+        right: 15px;
+        z-index: 1;
+      }
+
     }
-  }
-  [drawer] {
-    background-color: #EEEEEE;
-  }
-  #drawer {
-      overflow: initial;
-  }
-  paper-fab {
-    position: fixed;
-    bottom: 15px;
-    right: 15px;
-  }
-  .category {
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    overflow: hidden;
-    
-    &:first-letter {
-      text-transform: uppercase;
+
+    [drawer] {
+      background-color: #EEEEEE;
+
     }
+
   }
+  
 
   .done {
     text-align: center;
@@ -62,4 +81,5 @@
     background-color: #EEEEEE;
 
   }
+
 }

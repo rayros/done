@@ -4,7 +4,7 @@ Polymer('todo-list', {
     var _ = this;
     setTimeout(function () {
       _.classList.add('show');
-    }, 2000);
+    }, 1200);
   },
   newCategory: function() {
     this.$.drawer.closeDrawer();

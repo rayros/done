@@ -11,13 +11,14 @@
     <link rel="stylesheet" href="todo-list.css">
     <todo-new-category id="newCategory" hidden></todo-new-category>
     <todo-new-task id="newTask" hidden></todo-new-task>
+
     <core-drawer-panel id="drawer" responsiveWidth="740px">
       <!-- Drawer -->
       <core-header-panel drawer>
         <todo-categories id="categories"></todo-categories>
       </core-header-panel>
       <!-- Main -->
-      <core-header-panel class="main" main>
+      <core-header-panel main>
         <core-toolbar>
           <paper-icon-button icon="menu" core-drawer-toggle></paper-icon-button>
           <div class="category" flex>{{categoryName}}</div>
@@ -33,6 +34,7 @@
             </paper-dropdown>
           </paper-menu-button>
         </core-toolbar>
+        <paper-fab class="core-header" id="add" icon="add" on-click="{{addTask}}"></paper-fab>
         <div class="container">
           <div class="items" id="items">
   <!--           <todo-item>
@@ -49,7 +51,6 @@
           <div class="items" id="itemsChecked">
           </div>
         </div>
-        <paper-fab id="add" icon="add" on-click="{{addTask}}"></paper-fab>
       </core-header-panel>
     </core-drawer-panel >
     <core-a11y-keys target="{{parentElement}}" keys="alt+t" on-keys-pressed="{{addTask}}"></core-a11y-keys>
