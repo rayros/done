@@ -1,66 +1,26 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 
-<polymer-element name="todo-list" attributes=""
-  on-select-category="{{selectCategory}}"
-  on-new-category="{{newCategory}}"
-  on-update-all="{{updateAll}}"
-  on-update-tasks="{{updateTasks}}"
-  on-edit-task="{{editTask}}"
-  >
+<polymer-element name="todo-list" attributes="category">
   <template>
     <link rel="stylesheet" href="todo-list.css">
-    <todo-new-category id="newCategory" hidden></todo-new-category>
-    <todo-new-task id="newTask" hidden></todo-new-task>
-
-    <core-drawer-panel id="drawer" responsiveWidth="740px">
-      <!-- Drawer -->
-      <core-header-panel drawer>
-        <todo-categories id="categories"></todo-categories>
-      </core-header-panel>
-      <!-- Main -->
-      <core-header-panel main>
-        <core-toolbar>
-          <paper-icon-button icon="menu" core-drawer-toggle></paper-icon-button>
-          <div class="category" flex>{{categoryName}}</div>
-          <paper-menu-button>
-            <paper-icon-button icon="more-vert" noink></paper-icon-button>
-            <paper-dropdown class="dropdown" halign="right">
-            <core-menu>
-              <paper-item id="edit">Edit</paper-item>
-              <paper-item id="remove" on-click="{{removeCategory}}">Remove</paper-item>
-              <hr/>
-              <paper-item id="reset">Reset database</paper-item>
-            </core-menu>
-            </paper-dropdown>
-          </paper-menu-button>
-        </core-toolbar>
-        <paper-fab class="core-header" id="add" icon="add" on-click="{{addTask}}"></paper-fab>
-        <div class="container">
-          <div class="items" id="items">
-  <!--           <todo-item>
-              <name>Kupić mleko Zabrać pieniądze Zabrać pieniądze Zabrać pieniądze Zabrać pieniądze </name>
-              <todo-item><name>Zabrać pieniądze </name></todo-item>
-              <todo-item><name>Kupić mleko Zabrać pieniądze Zabrać pieniądze Zabrać pieniądze Zabrać pieniądze</name></todo-item>
-              <todo-item><name>Zapłacić za mleko</name></todo-item>
-            </todo-item>
-            <todo-item><name>Zabrać pieniądze Zabrać pieniądze Zabrać pieniądze Zabrać pieniądze </name></todo-item>
-            <todo-item><name>Kategorie</name></todo-item>
-            <todo-item><name>Dodawanie</name></todo-item> -->
-          </div>
-          <div class="done" id="done" hidden>Done!</div>
-          <div class="items" id="itemsChecked">
-          </div>
-        </div>
-      </core-header-panel>
-    </core-drawer-panel >
-    <core-a11y-keys target="{{parentElement}}" keys="alt+t" on-keys-pressed="{{addTask}}"></core-a11y-keys>
-    <core-a11y-keys target="{{parentElement}}" keys="alt+c" on-keys-pressed="{{newCategory}}"></core-a11y-keys>
+    <div class="container">
+      <div class="items" id="items">
+<!--           <todo-item>
+          <name>Kupić mleko Zabrać pieniądze Zabrać pieniądze Zabrać pieniądze Zabrać pieniądze </name>
+          <todo-item><name>Zabrać pieniądze </name></todo-item>
+          <todo-item><name>Kupić mleko Zabrać pieniądze Zabrać pieniądze Zabrać pieniądze Zabrać pieniądze</name></todo-item>
+          <todo-item><name>Zapłacić za mleko</name></todo-item>
+        </todo-item>
+        <todo-item><name>Zabrać pieniądze Zabrać pieniądze Zabrać pieniądze Zabrać pieniądze </name></todo-item>
+        <todo-item><name>Kategorie</name></todo-item>
+        <todo-item><name>Dodawanie</name></todo-item> -->
+      </div>
+      <div class="done" id="done" hidden>Done!</div>
+      <div class="items" id="itemsChecked">
+      </div>
+    </div>
 
   </template>
   <script src="todo-list.js">
-
-
-
-
 </script>
 </polymer-element>

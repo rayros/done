@@ -85,10 +85,19 @@
     },
     setCurrent: function(key, value, success) {
       this.transaction('current', function(t) {
-        var c = t.objectStore('current');
-        var req = c.put({key: key,value: value});
+        var current = t.objectStore('current');
+        var object = {
+          key: key,
+          value: value
+        };
+        var req = current.put(object);
         req.onsuccess = function() {
           DEBUG && console.log('DB:[current] key: ' + key + ' value: ', value);
+          // Event: "delete-task.x" where x = category id
+          var event = new CustomEvent('current.' + key, {
+            detail: value
+          });
+          window.dispatchEvent(event);
           if (success) {
             success();
           }
@@ -170,12 +179,12 @@
         });
       });
     },
-    tasks: function(categoryObject, checked, success) {
+    tasks: function(categoryId, checked, success) {
       var _ = this;
       var array = [];
       _.transaction('tasks', function(t) {
         var index = t.objectStore('tasks').index('category, checked');
-        var request = index.openCursor(_.IDBKeyRange.only([categoryObject.id, checked]), 'prev');
+        var request = index.openCursor(_.IDBKeyRange.only([categoryId, checked]), 'prev');
         request.onsuccess = function(e) {
           var cursor = e.target.result;
           if (cursor) {

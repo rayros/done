@@ -1,27 +1,25 @@
 'use strict';
 Polymer('todo-categories', {
+  items: {},
   ready: function() {
     var _ = this;
     _.$.add.onclick = function() {
       _.fire('new-category');
     };
+    _.update();
   },
   update: function() {
     var _ = this;
-    todoDatabase.current('category', function(categoryObject) {
+    todoDatabase.current('category', function(currentCategory) {
       todoDatabase.categories(function(array) {
-        var items = _.$.items;
-        while (items.firstChild) {
-          items.removeChild(items.firstChild);
-        }
-        array.forEach(function(object, index) {
-          var el = document.createElement('core-item');
-          el.label = object.name;
-          el.onclick = function() {
-            _.fire('select-category', object);
+        array.forEach(function(category, index) {
+          var item = _.items[category.id] = document.createElement('core-item');
+          item.label = category.name;
+          item.onclick = function() {
+            todoDatabase.setCurrent('category', category);
           };
-          _.$.items.appendChild(el);
-          if (categoryObject.id === object.id) {
+          _.$.items.appendChild(item);
+          if (currentCategory.id === category.id) {
             _.$.items.selected = index;
           }
         });
