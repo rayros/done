@@ -158,7 +158,7 @@
           var request = tasks.delete(taskId);
           request.onsuccess = function(e) {
             DEBUG && console.log('DB: delete task: ' + task.name);
-            // Event: "new-task.x" where x = category id
+            // Event: "delete-task.x" where x = category id
             var event = new CustomEvent('delete-task.' + task.category, {
               detail: task
             });
