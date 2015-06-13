@@ -107,22 +107,37 @@
     },
     addTask: function(name, categoryObject) {
       this.transaction('tasks', function(t) {
-        var c = t.objectStore('tasks');
-        var req = c.add({name: name,category: categoryObject.id,checked: 0});
+        var tasks = t.objectStore('tasks');
+        var task = {
+          name: name,
+          category: categoryObject.id,
+          checked: 0
+        };
+        var req = tasks.add(task);
         req.onsuccess = function() {
           DEBUG && console.log('DB: Add task "' + name + '" to category "' + categoryObject.name + '"');
+          // Event: "new-task.x" where x = category id
+          var event = new CustomEvent('new-task.' + task.category, {
+            detail: task
+          });
+          window.dispatchEvent(event);
         };
       });
     },
-    updateTask: function(taskId, object) {
+    updateTask: function(taskId, updateTask) {
       var _ = this;
       this.transaction('tasks', function(t) {
         var objectStore = t.objectStore('tasks');
         var req = objectStore.get(taskId);
         req.onsuccess = function(e) {
-          var data = _.merge(e.target.result, object);
-          objectStore.put(data);
-          DEBUG && console.log('DB: update task ' + data.name);
+          var task = _.merge(e.target.result, updateTask);
+          objectStore.put(task);
+          DEBUG && console.log('DB: update task ' + task.name);
+          // Event: "update-task.x" where x = category id
+          var event = new CustomEvent('update-task.' + task.category, {
+            detail: task
+          });
+          window.dispatchEvent(event);
         };
       });
     },
@@ -136,16 +151,23 @@
       });
     },
     deleteTask: function(taskId, success) {
-      this.transaction(['tasks'], function(t) {
-        var tasks = t.objectStore('tasks');
-        var req = tasks.delete(taskId);
-        req.onsuccess = function(e) {
-          DEBUG && console.log('DB: remove task by id: ' + taskId);
-          if (success) {
-            success(e);
-          }
-        };
-      
+      var _ = this;
+      _.getTask(taskId, function(task) {
+        _.transaction(['tasks'], function(t) {
+          var tasks = t.objectStore('tasks');
+          var request = tasks.delete(taskId);
+          request.onsuccess = function(e) {
+            DEBUG && console.log('DB: delete task: ' + task.name);
+            // Event: "new-task.x" where x = category id
+            var event = new CustomEvent('delete-task.' + task.category, {
+              detail: task
+            });
+            window.dispatchEvent(event);
+            if (success) {
+              success(e);
+            }
+          };
+        });
       });
     },
     tasks: function(categoryObject, checked, success) {
