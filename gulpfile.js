@@ -220,7 +220,10 @@ gulp.task('pagespeed', function(cb) {
   }, cb);
 });
 
-
+gulp.task('deploy', function() {
+  return gulp.src('./dist/**/*')
+             .pipe($.ghPages());
+});
 
 // Load custom tasks from the `tasks` directory
 try {
