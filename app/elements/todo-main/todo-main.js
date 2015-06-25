@@ -10,13 +10,17 @@ Polymer('todo-main', {
   },
   ready: function() {
     var _ = this;
+    function addTodoList(categoryId) {
+      var list = _.lists[categoryId] = document.createElement('todo-list');
+      list.hidden = true;
+      list.initTasks(categoryId);
+      _.$.lists.appendChild(list);
+    }
     todoDatabase.categories(function(array) {
       array.forEach(function(category) {
-        var list = _.lists[category.id] = document.createElement('todo-list');
-        list.category = category.id;
-        list.hidden = true;
-        list.updateTasks();
-        _.$.lists.appendChild(list);
+        if(!_.lists[category.id]) {
+          addTodoList(category.id);
+        }
       });
       todoDatabase.current('category', function(category) {
         _.categoryName = category.name;
@@ -24,9 +28,17 @@ Polymer('todo-main', {
         _.visible.hidden = false;
       });
     });
+    window.addEventListener('add-category', function(e) {
+      addTodoList(e.detail.id);
+    });
+    window.addEventListener('delete-category', function(e) {
+      var categoryId = e.detail;
+      _.lists[categoryId].remove();
+      delete _.lists[categoryId];
+    });
     window.addEventListener('current.category', function(e) {
       _.categoryName = e.detail.name;
-      _.visible.hidden = true;
+      if(_.visible) {_.visible.hidden = true; }
       _.visible = _.lists[e.detail.id];
       _.visible.hidden = false;
       _.$.drawer.closeDrawer();
@@ -42,7 +54,6 @@ Polymer('todo-main', {
         todoDatabase.deleteCategory(categoryObject.id, function() {
           todoDatabase.categories(function(array) {
             todoDatabase.setCurrent('category', array[0]);
-            _.updateAll();
           });
         });
       });

@@ -5,9 +5,13 @@
     version: 3,
     name: 'todo',
     polyfill: function(success, error) {
+      function isIOS8() {
+        var deviceAgent = navigator.userAgent.toLowerCase();
+        return /(iphone|ipod|ipad).* os 8_/.test(deviceAgent);
+      }
       this.indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB || window.shimIndexedDB;
       this.IDBKeyRange = window.IDBKeyRange || window.webkitIDBKeyRange || window.msIDBKeyRange || window.shimIndexedDB.modules.IDBKeyRange;
-      if (this.isIOS8()) {
+      if (isIOS8()) {
         this.indexedDB = window.shimIndexedDB;
         this.IDBKeyRange = window.shimIndexedDB.modules.IDBKeyRange;
       }
@@ -20,22 +24,7 @@
         console.log('DB: Your browser doesn\'t support a stable version of IndexedDB.\n Such and such feature will not be available.');
       });
     },
-    Version: function(event) {
-      return {
-        check: function(version) {
-          if (event.oldVersion < version && event.newVersion >= version) {
-            DEBUG && console.log('DB: Upgrading to version: ' + version);
-            return true;
-          } else {
-            return false;
-          }
-        }
-      };
-    },
-    isIOS8: function() {
-      var deviceAgent = navigator.userAgent.toLowerCase();
-      return /(iphone|ipod|ipad).* os 8_/.test(deviceAgent);
-    },
+    
     open: function(success) {
       var _ = this;
       var request = _.indexedDB.open(this.name, this.version);
@@ -47,10 +36,22 @@
         return false;
       };
       request.onupgradeneeded = function(event) {
+        function version(event) {
+          return {
+            check: function(version) {
+              if (event.oldVersion < version && event.newVersion >= version) {
+                DEBUG && console.log('DB: Upgrading to version: ' + version);
+                return true;
+              } else {
+                return false;
+              }
+            }
+          };
+        }
         DEBUG && console.log('DB: Upgrading...');
         var db = event.target.result;
         var t = event.target.transaction;
-        var v = _.Version(event);
+        var v = version(event);
         var tasks;
         if (v.check(2)) {
           tasks = db.createObjectStore('tasks', {keyPath: 'id',autoIncrement: true});
@@ -115,7 +116,8 @@
       });
     },
     addTask: function(name, categoryObject) {
-      this.transaction('tasks', function(t) {
+      var _ = this;
+      _.transaction('tasks', function(t) {
         var tasks = t.objectStore('tasks');
         var task = {
           name: name,
@@ -123,11 +125,11 @@
           checked: 0
         };
         var req = tasks.add(task);
-        req.onsuccess = function() {
+        req.onsuccess = function(e) {
           DEBUG && console.log('DB: Add task "' + name + '" to category "' + categoryObject.name + '"');
           // Event: "new-task.x" where x = category id
           var event = new CustomEvent('new-task.' + task.category, {
-            detail: task
+            detail: _.merge(task, {id: e.target.result})
           });
           window.dispatchEvent(event);
         };
@@ -169,7 +171,7 @@
             DEBUG && console.log('DB: delete task: ' + task.name);
             // Event: "delete-task.x" where x = category id
             var event = new CustomEvent('delete-task.' + task.category, {
-              detail: task
+              detail: taskId
             });
             window.dispatchEvent(event);
             if (success) {
@@ -197,11 +199,20 @@
       });
     },
     addCategory: function(string, success) {
-      this.transaction('categories', function(t) {
-        var c = t.objectStore('categories');
-        var req = c.add({name: string.toLowerCase()});
+      var _ = this;
+      _.transaction('categories', function(t) {
+        var categories = t.objectStore('categories');
+        var category = {
+          name: string
+        };
+        var req = categories.add(category);
         req.onsuccess = function(e) {
           DEBUG && console.log('DB: Add category');
+          // Event: "delete-task.x" where x = category id
+          var event = new CustomEvent('add-category', {
+            detail: _.merge(category, {id: e.target.result})
+          });
+          window.dispatchEvent(event);
           if (success) {
             success({id: e.target.result,name: string});
           }
@@ -214,11 +225,15 @@
         var objectStore = t.objectStore('categories');
         var req = objectStore.get(categoryId);
         req.onsuccess = function(e) {
-          var data = _.merge(e.target.result, object);
-          objectStore.put(data);
-          DEBUG && console.log('DB: update category ' + data.name);
+          var category = _.merge(e.target.result, object);
+          objectStore.put(category);
+          DEBUG && console.log('DB: update category ' + category.name);
+          var event = new CustomEvent('update-category', {
+            detail: category
+          });
+          window.dispatchEvent(event);
           if (success) {
-            success(data);
+            success(category);
           }
         };
       });
@@ -244,6 +259,10 @@
             var req = categories.delete(categoryId);
             req.onsuccess = function() {
               DEBUG && console.log('DB: remove category by id: ' + categoryId);
+              var event = new CustomEvent('delete-category', {
+                detail: categoryId
+              });
+              window.dispatchEvent(event);
               if (success) {
                 success(e);
               }
