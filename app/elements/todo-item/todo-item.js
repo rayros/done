@@ -9,6 +9,9 @@ Polymer('todo-item',{
       this.$.arrow.hidden = false;
     }
   },
+  setName: function(string) {
+    this.querySelector('name').innerHTML = string;
+  },
   editHandler: function() {
     this.fire('edit-task', this.taskId);
   },

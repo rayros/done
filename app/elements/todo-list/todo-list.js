@@ -1,99 +1,54 @@
 'use strict';
 Polymer('todo-list', {
-  domReady: function () {
+  category: null,
+  items: {},
+  initTasks: function(category) {
     var _ = this;
-    setTimeout(function () {
-      _.classList.add('show');
-    }, 1200);
-  },
-  newCategory: function() {
-    this.$.drawer.closeDrawer();
-    this.$.newCategory.open();
-  },
-  selectCategory: function(event) {
-    todoDatabase.setCurrent('category', event.detail);
-    this.updateTasks();
-    this.$.drawer.closeDrawer();
-  },
-  updateAll: function() {
-    this.$.categories.update();
-    this.updateTasks();
-  },
-  resizeDropdowMenu: function() {
-    var el = this.querySelector('::shadow paper-menu-button paper-dropdown::shadow #scroller');
-    el.style.width = null;
-    el.style.height = null;
-  },
-  updateTasks: function() {
-    var _ = this;
-    todoDatabase.current('category', function(categoryObject) {
-      _.categoryName = categoryObject.name;
-      _.$.remove.hidden = categoryObject.id === 1 ? true : false;
-      _.resizeDropdowMenu();
-      todoDatabase.tasks(categoryObject, 0, function(array) {
-        var items = _.$.items;
-        while (items.firstChild) {
-          items.removeChild(items.firstChild);
-        }
-        items = _.$.itemsChecked;
-        while (items.firstChild) {
-          items.removeChild(items.firstChild);
-        }
-        array.forEach(function(object) {
-          var el = document.createElement('todo-item');
-          el.taskId = object.id;
-          el.checked = object.checked;
-          var name = document.createElement('name');
-          name.innerHTML = object.name;
-          el.appendChild(name);
-          _.$.items.appendChild(el);
-        });
+    _.category = category;
+    function createTask(task) {
+      var el = _.items[task.id] = document.createElement('todo-item'), 
+      name = document.createElement('name');
+      el.taskId = task.id;
+      el.id = 'task' + task.id;
+      el.checked = task.checked;
+      name.innerHTML = task.name;
+      el.appendChild(name);
+      return el;
+    }
+    function renderTask(container) {
+      return function(task) {
+        var el = createTask(task);
+        container.appendChild(el);
+      };
+    }
+    function renderTasks(container, checked) {
+      todoDatabase.tasks(category, checked, function(array) {
+        _.$.done.hidden = array.length && checked ? false : true;
+        var render = renderTask(container);
+        array.forEach(render);
       });
-      
-      todoDatabase.tasks(categoryObject, 1, function(array) {
-        _.$.done.hidden = array.length ? false : true;
-        array.forEach(function(object) {
-          var el = document.createElement('todo-item');
-          el.taskId = object.id;
-          el.checked = object.checked;
-          var name = document.createElement('name');
-          name.innerHTML = object.name;
-          el.appendChild(name);
-          _.$.itemsChecked.appendChild(el);
-        });
-      });
+    }
+    renderTasks(_.$.items, 0);
+    renderTasks(_.$.itemsChecked, 1);
+    
+    window.addEventListener('new-task.' + _.category, function(e) {
+      var task = createTask(e.detail), 
+      first = _.$.items.firstChild;
+      _.$.items.insertBefore(task, first);
     });
-  },
-  ready: function() {
-    var _ = this;
-    todoDatabase.init(function() {
-      _.updateAll();
+    window.addEventListener('update-task.' + _.category, function(e) {
+      var task = _.items[e.detail.id];
+      task.setName(e.detail.name);
+      setTimeout(function() {
+        var dest = e.detail.checked === 0 ? _.$.items : _.$.itemsChecked, 
+        first = dest.firstChild;
+        dest.insertBefore(task, first);
+        _.$.done.hidden = _.$.itemsChecked.getElementsByTagName('*').length ? false : true;
+      }, 3000);
     });
-    _.$.edit.onclick = function() {
-      todoDatabase.current('category', function(categoryObject) {
-        _.$.newCategory.open(categoryObject);
-      });
-    };
-    _.$.remove.onclick = function() {
-      todoDatabase.current('category', function(categoryObject) {
-        todoDatabase.deleteCategory(categoryObject.id, function() {
-          todoDatabase.categories(function(array) {
-            todoDatabase.setCurrent('category', array[0]);
-            _.updateAll();
-          });
-        });
-      });
-    };
-    _.$.reset.onclick = function() {
-      todoDatabase.deleteDB(function() {
-        location.reload();
-      });
-    };
-  },
-  addTask: function() {
-    this.$.newTask.open();
-  },
-  editTask: function(e) {
-    this.$.newTask.open(e.detail);
+    window.addEventListener('delete-task.' + _.category, function(e) {
+      _.items[e.detail].remove();
+      delete _.items[e.detail];
+    });
   }
 });
