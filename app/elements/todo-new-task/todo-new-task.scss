@@ -21,7 +21,7 @@
       height: 100%;
       width: 100%;
       #fields {
-        overflow: auto;
+        overflow: scroll;
         padding: 10px;
 
         paper-input {

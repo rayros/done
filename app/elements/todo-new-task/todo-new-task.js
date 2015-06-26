@@ -10,8 +10,10 @@ Polymer('todo-new-task', {
       _.backHandler();
     };
     _.$.addSubtask.onclick = function() {
-      _.$.subtasks.appendChild(new Subtask());
+      var subtask = new Subtask();
+      _.$.subtasks.appendChild(subtask);
       _.$.fields.scrollTop = _.$.fields.scrollHeight;
+      subtask.focus();
     };
   },
   backHandler: function() {
@@ -42,7 +44,6 @@ Polymer('todo-new-task', {
         _.$.delete.hidden = false;
         _.hidden = false;
         deserializeSubtasks(object.subtasks);
-        _.$.name.blur();
       });
     } else {
       _.currentId = null;

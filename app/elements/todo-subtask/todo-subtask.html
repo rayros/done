@@ -9,18 +9,22 @@
     </div>
   </template>
   <script>
-    (function () {
-      Polymer({
-        // define element prototype here
-        checked: 0,
-        ready: function() {
-          var _ = this;
-          _.$.remove.onclick = function () {
-            _.remove();
-          };
-          _.$.input.focus();
-        }
-      });
-    })();
-  </script>
+
+
+(function() {
+  Polymer({
+    // define element prototype here
+    checked: 0,
+    ready: function() {
+      var _ = this;
+      _.$.remove.onclick = function() {
+        _.remove();
+      };
+    },
+    focus: function() {
+      this.$.input.focus();
+    }
+  });
+})();
+</script>
 </polymer-element>
