@@ -6,13 +6,8 @@ Polymer('todo-list', {
     var _ = this;
     _.category = category;
     function createTask(task) {
-      var el = _.items[task.id] = document.createElement('todo-item'), 
-      name = document.createElement('name');
-      el.taskId = task.id;
-      el.id = 'task' + task.id;
-      el.checked = task.checked;
-      name.innerHTML = task.name;
-      el.appendChild(name);
+      var el = _.items[task.id] = document.createElement('todo-item');
+      el.constr(task);
       return el;
     }
     function renderTask(container) {
@@ -38,17 +33,16 @@ Polymer('todo-list', {
     });
     window.addEventListener('update-task.' + _.category, function(e) {
       var task = _.items[e.detail.id];
-      task.setName(e.detail.name);
-      setTimeout(function() {
-        var dest = e.detail.checked === 0 ? _.$.items : _.$.itemsChecked, 
-        first = dest.firstChild;
-        dest.insertBefore(task, first);
-        _.$.done.hidden = _.$.itemsChecked.getElementsByTagName('*').length ? false : true;
-      }, 3000);
+      task.constr(e.detail);
+      var dest = e.detail.checked === 0 ? _.$.items : _.$.itemsChecked, 
+      first = dest.firstChild;
+      dest.insertBefore(task, first);
+      _.$.done.hidden = _.$.itemsChecked.getElementsByTagName('*').length ? false : true;
     });
     window.addEventListener('delete-task.' + _.category, function(e) {
       _.items[e.detail].remove();
       delete _.items[e.detail];
+      _.$.done.hidden = _.$.itemsChecked.getElementsByTagName('*').length ? false : true;
     });
   }
 });

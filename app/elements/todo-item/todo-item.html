@@ -1,13 +1,13 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 <link rel="import" href="../../bower_components/paper-checkbox/paper-checkbox.html">
 <link rel="import" href="../../bower_components/core-icons/editor-icons.html">
-<polymer-element name="todo-item" attributes="checked">
+<polymer-element name="todo-item" attributes="checked" constructor="TodoItem">
   <template>
     <link rel="stylesheet" href="todo-item.css">
     <div class="item {{ {check: checked} | tokenList }}" horizontal layout center>
       <paper-checkbox id="checkbox" on-change="{{ checkboxHandler }}"></paper-checkbox>
       <span flex class="{{ {check: checked} | tokenList }}">
-        <content select="name"></content>
+        {{name}}
       </span>
       <core-icon-button id="arrow" icon="arrow-drop-down" on-click="{{arrowHandler}}" hidden></core-icon-button>
       <core-icon-button id="edit" icon="editor:mode-edit" on-click="{{editHandler}}" ></core-icon-button>

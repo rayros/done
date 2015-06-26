@@ -10,10 +10,13 @@
         <paper-icon-button id="check" icon="check"></paper-icon-button>
       </core-toolbar>
       <div class="content" vertical layout>
-        <div flex>
-          <div layout horizontal class="fields">
+        <div flex id="fields">
             <paper-input id="name" label="Task Name"></paper-input>
-          </div>
+            <div id="subtasks"></div>
+            <paper-button id="addSubtask">
+              <core-icon icon="add-box"></core-icon>
+              add subtask
+            </paper-button>
         </div>
         <div>
           <paper-button id="delete" hidden>remove</paper-button>

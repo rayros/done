@@ -20,13 +20,22 @@
       position: absolute;
       height: 100%;
       width: 100%;
-
-     .fields {
+      #fields {
+        overflow: auto;
         padding: 10px;
 
         paper-input {
           width: 100%;
           font-size: 30px;
+        }
+        #subtasks {
+          margin-left: 20px;
+        }
+        #addSubtask {
+          width: 100%;
+          core-icon {
+            margin-right: 10px;
+          }
         }
       }
 

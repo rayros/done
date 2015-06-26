@@ -115,14 +115,15 @@
         };
       });
     },
-    addTask: function(name, categoryObject) {
+    addTask: function(name, categoryObject, subtasks) {
       var _ = this;
       _.transaction('tasks', function(t) {
         var tasks = t.objectStore('tasks');
         var task = {
           name: name,
           category: categoryObject.id,
-          checked: 0
+          checked: 0,
+          subtasks: subtasks
         };
         var req = tasks.add(task);
         req.onsuccess = function(e) {

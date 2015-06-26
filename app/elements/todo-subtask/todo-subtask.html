@@ -1,0 +1,26 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<polymer-element name="todo-subtask" attributes="name" constructor="Subtask">
+  <template>
+    <link rel="stylesheet" href="todo-subtask.css">
+    <div layout horizontal center>
+      <paper-input id="input" label="Subtask Name" value="{{name}}"></paper-input>
+      <paper-icon-button id="remove" icon="highlight-remove"></paper-icon-button>
+    </div>
+  </template>
+  <script>
+    (function () {
+      Polymer({
+        // define element prototype here
+        checked: 0,
+        ready: function() {
+          var _ = this;
+          _.$.remove.onclick = function () {
+            _.remove();
+          };
+          _.$.input.focus();
+        }
+      });
+    })();
+  </script>
+</polymer-element>

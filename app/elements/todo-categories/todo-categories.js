@@ -14,7 +14,7 @@ Polymer('todo-categories', {
       var item = _.items[category.id] = document.createElement('core-item');
       item.label = category.name;
       item.onclick = function() {
-        todoDatabase.setCurrent('category', category);
+        todoDatabase.setCurrent('category', {name: item.label, id: category.id});
       };
       return item;
     }

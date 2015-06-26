@@ -22,6 +22,8 @@
     "todoDatabase": true,
     "indexedDB": true,
     "IDBKeyRange": true,
-    "DEBUG": true
+    "DEBUG": true,
+    "Subtask": true,
+    "TodoItem": true
   }
 }
