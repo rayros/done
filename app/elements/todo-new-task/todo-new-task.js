@@ -15,6 +15,7 @@ Polymer('todo-new-task', {
       _.$.fields.scrollTop = _.$.fields.scrollHeight;
       subtask.focus();
     };
+
   },
   backHandler: function() {
     this.hidden = true;

@@ -20,6 +20,11 @@
       _.$.remove.onclick = function() {
         _.remove();
       };
+      window.addEventListener('resize', function() {
+        if(_.querySelector('* /deep/ *:focus')) {
+           _.scrollIntoView();
+        } 
+      });
     },
     focus: function() {
       this.$.input.focus();
