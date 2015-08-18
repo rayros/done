@@ -1,5 +1,5 @@
 CACHE MANIFEST
-# rev 28.06.2015
+# rev 18.08.2015
 
 elements/elements.vulcanized.html
 styles/main.css
@@ -13,4 +13,3 @@ scripts/analytics.js empty_fallback.js
 
 NETWORK:
 *
-
